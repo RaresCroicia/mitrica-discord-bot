@@ -1,0 +1,19 @@
+{
+  "name": "mitrica",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/mitrica.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "keywords": [],
+  "author": "Rares Croicia",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/rest": "^1.4.0",
+    "chalk": "^4.1.2",
+    "discord-api-types": "^0.37.21",
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3"
+  }
+}
