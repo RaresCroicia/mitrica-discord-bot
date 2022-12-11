@@ -36,7 +36,7 @@ module.exports = {
 
       const message = await interaction.deferReply({
         fetchReply: true,
-        ephemeral: true
+        ephemeral: false
       });
 
       const mesaj = `Am intrat cu taranul de ${interaction.member.user} pe canal`;

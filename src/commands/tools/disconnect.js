@@ -23,7 +23,7 @@ module.exports = {
     } else {
       await interaction.deferReply({
         fetchReply: true,
-        ephemeral: true
+        ephemeral: false
       });
       await interaction.editReply({
         content: `Esti retardat? Nu sunt conectat!`
