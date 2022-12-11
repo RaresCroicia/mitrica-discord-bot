@@ -2,6 +2,7 @@ require("dotenv").config();
 const token = process.env.MITRICA_TOKEN;
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
+const mongoose = require("mongoose");
 
 const client = new Client({ intents: GatewayIntentBits.Guilds });
 client.commands = new Collection();
@@ -20,3 +21,7 @@ for (const folder of functionFolders) {
 client.handleEvents();
 client.handleCommands();
 client.login(token);
+
+mongoose.connect(process.env.MONGO_URL, () => {
+  console.log("Conectat la mongolau");
+})
