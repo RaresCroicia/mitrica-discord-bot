@@ -1,7 +1,7 @@
 # Mitrica - Bot de discord
 
 ## Versiune Curenta
-- v1.0.2
+- v1.0.2.1
 
 ## Menirea lui mitrica
 
@@ -18,6 +18,16 @@ Momentan stie sa faca putine, nu ca noi am stii sa facem mai multe, dar prin ce 
 - Sa dea cea mai buna replica de agatat
 - Sa dea proverbe
 - Sa te faca sa taci
+
+Ceva ce stie el sa faca si noi nu e
+- atunci cand moare, se respawneaza singur
+
+## Cum il rulezi
+
+- fie ```npm run test```
+- fie ```make```
+- fie ```./startMitrica```
+- de oprit doar CTRL+C 
 
 ## Comenzi
 
