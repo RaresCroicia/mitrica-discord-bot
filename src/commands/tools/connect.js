@@ -19,11 +19,12 @@ module.exports = {
 
       const message = await interaction.deferReply({
         fetchReply: true,
+        ephemeral: false
       });
 
       const mesaj = `Sunt deja undeva, lasa-ma dracu!`;
       await interaction.editReply({
-        content: mesaj,
+        content: mesaj
       });
 
     } else {
@@ -35,11 +36,12 @@ module.exports = {
 
       const message = await interaction.deferReply({
         fetchReply: true,
+        ephemeral: true
       });
 
       const mesaj = `Am intrat cu taranul de ${interaction.member.user} pe canal`;
       await interaction.editReply({
-        content: mesaj,
+        content: mesaj
       });
     }
   },

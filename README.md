@@ -1,7 +1,7 @@
 # Mitrica - Bot de discord
 
 ## Versiune Curenta
-- v1.0.1
+- v1.0.2
 
 ## Menirea lui mitrica
 
@@ -16,6 +16,8 @@ Momentan stie sa faca putine, nu ca noi am stii sa facem mai multe, dar prin ce 
 - Sa dea un quote, fie al cuiva, fie random.
 - Sa zica clasica replica catre Marian.
 - Sa dea cea mai buna replica de agatat
+- Sa dea proverbe
+- Sa te faca sa taci
 
 ## Comenzi
 
@@ -25,9 +27,9 @@ Momentan stie sa faca putine, nu ca noi am stii sa facem mai multe, dar prin ce 
 - /marian
 - /zlavog
 - /quote
+- /tacima
+- /proverb
 
 ## TBA
 - /birthdays
 - /birthday <cineva>
-- /proverb
-- /tacima

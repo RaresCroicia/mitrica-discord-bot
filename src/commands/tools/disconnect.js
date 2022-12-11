@@ -13,18 +13,20 @@ module.exports = {
       connection.destroy();
       const message = await interaction.deferReply({
         fetchReply: true,
+        ephemeral: false
       });
 
       const mesaj = `M-a dat taranul de ${interaction.member.user} afara`;
       await interaction.editReply({
-        content: mesaj,
+        content: mesaj
       });
     } else {
       await interaction.deferReply({
         fetchReply: true,
+        ephemeral: true
       });
       await interaction.editReply({
-        content: `Esti retardat? Nu sunt conectat!`,
+        content: `Esti retardat? Nu sunt conectat!`
       });
     }
   },

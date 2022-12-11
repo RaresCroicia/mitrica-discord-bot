@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-
 module.exports = { 
     data: new SlashCommandBuilder()
         .setName(`quote`)
@@ -7,7 +6,8 @@ module.exports = {
 
         async execute(interaction, client) {
             const message = await interaction.deferReply({
-                fetchReply: true
+                fetchReply: true,
+                ephemeral: false
             });
 
             const quotes = [
@@ -16,7 +16,7 @@ module.exports = {
                 "Vorbim de cocalar si cocalarul la samanta",
                 "ce-a cazut, ce-a cazuuuut? Ah, pula"
             ];
-
+            
             const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
             await interaction.editReply({
                 content: randomQuote
