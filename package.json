@@ -1,7 +1,7 @@
 {
   "name": "mitrica",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Un bot de discord cu menirea de a ii bate pe restul ca nu e nimeni la fel de jumate de neuron ca el",
   "main": "src/mitrica.js",
   "scripts": {
     "test": "node ."
@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/rest": "^1.4.0",
+    "@discordjs/voice": "^0.14.0",
     "chalk": "^4.1.2",
     "discord-api-types": "^0.37.21",
     "discord.js": "^14.7.1",

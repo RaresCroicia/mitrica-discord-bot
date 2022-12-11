@@ -14,5 +14,5 @@ module.exports = {
             await interaction.editReply({
                 content: newMessage
             });
-    }
+        }
 }
