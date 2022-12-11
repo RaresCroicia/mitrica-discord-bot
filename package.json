@@ -4,7 +4,8 @@
   "description": "Un bot de discord cu menirea de a ii bate pe restul ca nu e nimeni la fel de jumate de neuron ca el",
   "main": "src/mitrica.js",
   "scripts": {
-    "test": "node ."
+    "test": "node .",
+    "start": "make"
   },
   "keywords": [],
   "author": "Rares Croicia",
