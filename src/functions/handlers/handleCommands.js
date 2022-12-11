@@ -18,8 +18,8 @@ module.exports = (client) => {
       }
     }
 
-    const clientId = '1051223191525277697';
-    const guildId = '1050118228443156553';
+    const clientId = process.env.CLIENT_ID;
+    const guildId = process.env.GUILD_ID;
     const rest = new REST({version: '9'}).setToken(process.env.MITRICA_TOKEN);
 
     try {
