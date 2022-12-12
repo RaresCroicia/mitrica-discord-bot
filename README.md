@@ -1,7 +1,7 @@
 # Mitrica - Bot de discord
 
 ## Versiune Curenta
-- v1.0.3
+- v1.1.0
 
 ## Menirea lui mitrica
 
