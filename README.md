@@ -1,7 +1,7 @@
 # Mitrica - Bot de discord
 
 ## Versiune Curenta
-- v1.0.2.1
+- v1.0.3
 
 ## Menirea lui mitrica
 
@@ -18,6 +18,9 @@ Momentan stie sa faca putine, nu ca noi am stii sa facem mai multe, dar prin ce 
 - Sa dea cea mai buna replica de agatat
 - Sa dea proverbe
 - Sa te faca sa taci
+- Sa iti dea o palma
+- Sa stea treaz, pe un heroku cu cel mai cretin payment
+
 
 Ceva ce stie el sa faca si noi nu e
 - atunci cand moare, se respawneaza singur
@@ -39,6 +42,7 @@ Ceva ce stie el sa faca si noi nu e
 - /quote
 - /tacima
 - /proverb
+- /plesneala
 
 ## TBA
 - /birthdays
