@@ -1,5 +1,8 @@
 # Versiunile lui mitrica
 
+## v1.1.1
+- Mitrica are in existenta ceva site, dar nu are de fapt
+
 ## v1.1.0
 - Mitrica este aranjat, ne-am permis sa ii zicem ca oficial s-a produs update minor superb
 

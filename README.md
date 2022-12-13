@@ -1,7 +1,7 @@
 # Mitrica - Bot de discord
 
 ## Versiune Curenta
-- v1.1.0
+- v1.1.1
 
 ## Menirea lui mitrica
 
@@ -20,6 +20,7 @@ Momentan stie sa faca putine, nu ca noi am stii sa facem mai multe, dar prin ce 
 - Sa te faca sa taci
 - Sa iti dea o palma
 - Sa stea treaz, pe un heroku cu cel mai cretin payment
+- Are interfata grafica pentru niste chestii, dar nu are de fapt
 
 
 Ceva ce stie el sa faca si noi nu e

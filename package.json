@@ -4,8 +4,8 @@
   "description": "Un bot de discord cu menirea de a ii bate pe restul ca nu e nimeni la fel de jumate de neuron ca el",
   "main": "src/mitrica.js",
   "scripts": {
-    "test": "node .",
-    "start": "make"
+    "test": "concurrently \"node .\" \"npm start --prefix frontend\"",
+    "start": "concurrently \"make\" \"cd frontend && npm start\""
   },
   "keywords": [],
   "author": "Rares Croicia",
@@ -14,6 +14,7 @@
     "@discordjs/rest": "^1.4.0",
     "@discordjs/voice": "^0.14.0",
     "chalk": "^4.1.2",
+    "concurrently": "^7.6.0",
     "discord-api-types": "^0.37.21",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
