@@ -1,5 +1,8 @@
 # Versiunile lui mitrica
 
+## v1.1.2
+- Mitrica stie cateva zile de nastere
+
 ## v1.1.1
 - Mitrica are in existenta ceva site, dar nu are de fapt
 

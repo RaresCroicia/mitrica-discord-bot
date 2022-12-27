@@ -1,7 +1,7 @@
 # Mitrica - Bot de discord
 
 ## Versiune Curenta
-- v1.1.1
+- v1.1.2
 
 ## Menirea lui mitrica
 
@@ -32,6 +32,7 @@ Ceva ce stie el sa faca si noi nu e
 - fie ```make```
 - fie ```./startMitrica```
 - de oprit doar CTRL+C 
+- el oricum merge permanent
 
 ## Comenzi
 
@@ -44,7 +45,7 @@ Ceva ce stie el sa faca si noi nu e
 - /tacima
 - /proverb
 - /plesneala
+- /birthdays
 
 ## TBA
-- /birthdays
 - /birthday <cineva>
