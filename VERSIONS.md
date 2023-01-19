@@ -1,5 +1,8 @@
 # Versiunile lui mitrica
 
+## v1.1.3
+- Mitrica stie sa raspunda la intrebari
+
 ## v1.1.2
 - Mitrica stie cateva zile de nastere
 
