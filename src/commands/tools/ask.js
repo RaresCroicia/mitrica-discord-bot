@@ -1,4 +1,16 @@
 const { SlashCommandBuilder } = require('discord.js');
+const mongoose = require('mongoose');
+
+const AnswerSchema = new mongoose.Schema(
+    {
+        answer: {
+            type: String,
+            required: true
+        }
+    }
+);
+
+const Answers = mongoose.model("answers", AnswerSchema);
 
 module.exports = { 
     data: new SlashCommandBuilder()
@@ -16,7 +28,9 @@ module.exports = {
                 fetchReply: true
             });
 
-            const replies = ["Da barosanu meu tras prin scula lu' zeus, normal!", "Nu, ghertoi imputit, tu esti definita ghertoiului din dictionar pentru toate sensurile lui"];
+            const answers = await Answers.find({});
+
+            const replies = answers.map(a => a.answer);
 
             await interaction.editReply({
                 content: "Intrebarea la care ma pui sa raspund: " + interaction.options.getString("question") + "\n" + replies[Math.floor(Math.random() * replies.length)] 

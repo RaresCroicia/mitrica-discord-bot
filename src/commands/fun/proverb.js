@@ -14,7 +14,7 @@ const ProverbeSchema = new mongoose.Schema(
     }
 );
 
-const Proverbe = mongoose.model("proverbe", ProverbeSchema);
+const Proverbe = mongoose.model("proverbes", ProverbeSchema);
 
 module.exports = { 
     data: new SlashCommandBuilder()
