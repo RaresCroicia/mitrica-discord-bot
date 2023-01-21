@@ -27,10 +27,10 @@ module.exports = {
             const message = await interaction.deferReply({
                 fetchReply: true
             });
-
+6
             const methods = await Methods.find({});
             const methodsMapped = methods.map(m => m.method);
-            const response = "Simplu frate, ca sa inveti la " + interaction.option.getString("materia") + " trebiue sa:\n" + methodsMapped[Math.floor(Math.random() * methodsMapped.length)];
+            const response = "Simplu frate, ca sa inveti la " + interaction.options.getString("materia") + " trebuie sa:\n" + methodsMapped[Math.floor(Math.random() * methodsMapped.length)];
 
             await interaction.editReply({
                 content: response
