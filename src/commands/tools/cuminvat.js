@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 const MethodSchema = new mongoose.Schema(
     {
