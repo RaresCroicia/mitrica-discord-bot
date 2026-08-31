@@ -11,10 +11,12 @@ module.exports = {
         await command.execute(interaction, client);
       } catch (error) {
         console.error(error);
-        await interaction.reply({
-          content: `Ceva o mers prost`,
-          ephemeral: true,
-        });
+        const raspuns = { content: `Ceva o mers prost`, ephemeral: true };
+        if (interaction.deferred || interaction.replied) {
+          await interaction.followUp(raspuns).catch(() => {});
+        } else {
+          await interaction.reply(raspuns).catch(() => {});
+        }
       }
     }
   },

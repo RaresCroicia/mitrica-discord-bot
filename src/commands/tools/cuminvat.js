@@ -24,6 +24,12 @@ module.exports = {
         ),
 
         async execute(interaction, client) {
+            if (!process.env.MONGO_URL) {
+                return interaction.reply({
+                    content: "N-am baza de date, deci nu stiu nici eu cum se invata. Da-i cu cititul si speranta."
+                });
+            }
+
             const message = await interaction.deferReply({
                 fetchReply: true
             });

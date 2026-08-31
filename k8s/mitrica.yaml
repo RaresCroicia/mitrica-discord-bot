@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata: { name: bots }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: mitrica, namespace: bots }
+spec:
+  replicas: 1
+  strategy: { type: Recreate }
+  selector: { matchLabels: { app: mitrica } }
+  template:
+    metadata: { labels: { app: mitrica } }
+    spec:
+      containers:
+        - name: mitrica
+          image: ghcr.io/rarescroicia/mitrica:latest
+          imagePullPolicy: Always
+          env:
+            - { name: TZ, value: Europe/Bucharest }
+            - { name: OLLAMA_URL, value: "http://192.168.1.192:11434" }
+            - { name: OLLAMA_MODEL, value: "qwen2.5:7b" }
+          envFrom:
+            - secretRef: { name: mitrica-env }
+          resources:
+            requests: { cpu: 50m, memory: 96Mi }
+            limits: { memory: 256Mi }

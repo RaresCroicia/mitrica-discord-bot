@@ -1,0 +1,10 @@
+node_modules
+frontend
+.env
+.git
+k8s
+*.md
+Makefile
+Procfile
+startMitrica
+Dockerfile

@@ -22,6 +22,12 @@ module.exports = {
         .setDescription(`Un quote random`),
 
     async execute(interaction, client) {
+        if (!process.env.MONGO_URL) {
+            return interaction.reply({
+                content: "N-am baza de date, n-am quote-uri. Jumatate de neuron, zero memorie."
+            });
+        }
+
         const message = await interaction.deferReply({
             fetchReply: true,
             ephemeral: false

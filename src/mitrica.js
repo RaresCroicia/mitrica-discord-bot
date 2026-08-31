@@ -22,6 +22,11 @@ client.handleEvents();
 client.handleCommands();
 client.login(token);
 
-mongoose.connect(process.env.MONGO_URL, () => {
-  console.log("Conectat la mongolau");
-})
+if (process.env.MONGO_URL) {
+  mongoose.connect(process.env.MONGO_URL, (err) => {
+    if (err) console.error("Nu m-am putut conecta la mongolau:", err.message);
+    else console.log("Conectat la mongolau");
+  })
+} else {
+  console.log("MONGO_URL nu e setat, pornesc fara mongolau (quote/cuminvat dezactivate)");
+}

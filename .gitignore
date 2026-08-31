@@ -1,3 +1,4 @@
 node_modules/
 package-lock.json
 .env
+k8s/mitrica-secret.yaml
