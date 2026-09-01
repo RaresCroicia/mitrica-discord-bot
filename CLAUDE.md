@@ -7,13 +7,14 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 | Ce | Unde | Detalii |
 |---|---|---|
 | Host Proxmox | `192.168.1.190` | hypervisor |
-| VM k3s | `192.168.1.108` | k3s single-node + Traefik ingress; aici trăiește botul |
-| LXC Ollama | `192.168.1.192` | Ollama pe GPU GTX 1660 Ti, API: `http://192.168.1.192:11434` |
+| VM k3s | `192.168.1.108` | k3s single-node + Traefik ingress; aici trăiește botul; are GPU-ul (GTX 1660 Ti) prin PCI passthrough |
+| Ollama | pod în k3s, namespace `media` | API în cluster: `http://ollama.media.svc.cluster.local:11434` |
 
-- Totul comunică direct în LAN; podul din k3s ajunge la Ollama fără VPN/tunel.
-- Modele Ollama disponibile: `qwen2.5:7b` (folosit acum, ~1-5s/răspuns), `llama3.2:3b` (mai rapid, dacă 7B devine lent), `phi3.5`.
+- Ollama rulează în același cluster (namespace `media`), pe GPU partajat cu Jellyfin prin time-slicing — în timpul unei rafale de transcodare inferența poate încetini de ~20x, de aici timeout-ul generos (120s) din comenzi.
+- Modelul stă permanent în VRAM (`OLLAMA_KEEP_ALIVE=-1` + postStart warm-up în manifestul lui Ollama).
+- Modele Ollama disponibile: `qwen2.5:7b` (folosit acum, ~1-5s/răspuns cald), `llama3.2:3b` (mai rapid, dacă 7B devine lent), `phi3.5`.
 - GPU-ul e unul singur — cererile `/ask` concurente se procesează secvențial în Ollama; ok pentru un server mic.
-- `kubectl` merge din WSL de pe PC (kubeconfig arată spre VM). Build-ul de imagine se face pe VM-ul k3s.
+- `kubectl` merge din WSL de pe PC (kubeconfig arată spre VM).
 - Există certificat wildcard `*.lab.rcroi.xyz` în cluster (irelevant pentru bot).
 
 ## Structura repo-ului
@@ -31,7 +32,7 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 - `MITRICA_TOKEN` — tokenul de Discord (secret)
 - `CLIENT_ID`, `GUILD_ID` — pentru înregistrarea slash commands (secret)
 - `MONGO_URL` — conexiunea Mongo (secret, OPȚIONAL: fără el botul pornește normal, doar `/quote` și `/cuminvat` răspund că n-au bază de date; momentan nu există Mongo deployat nicăieri)
-- `OLLAMA_URL` (default `http://192.168.1.192:11434`), `OLLAMA_MODEL` (default `qwen2.5:7b`) — setate simplu în manifest
+- `OLLAMA_URL` (default `http://ollama.media.svc.cluster.local:11434`), `OLLAMA_MODEL` (default `qwen2.5:7b`) — setate simplu în manifest
 
 ## Deploy
 

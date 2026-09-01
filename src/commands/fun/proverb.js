@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const PROVERBE = require('../../data/proverbe.js');
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://192.168.1.192:11434';
+const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama.media.svc.cluster.local:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
 
 function alegeProverbe(cate) {
@@ -33,7 +33,7 @@ async function proverbCuLLM(alese) {
             stream: false,
             system: 'Esti Mitrica, un bot de Discord roman dus cu pluta. Primesti o lista de proverbe romanesti si creezi UN SINGUR proverb nou, scurt (maxim 20 de cuvinte), amestecand bucati si idei din ele. Proverbul trebuie sa sune ca o intelepciune populara autentica, spusa cu toata seriozitatea, dar sa fie complet absurd si fara sens - o petarda totala. Nu explica nimic, nu pune ghilimele, raspunde DOAR cu proverbul in romana.'
         }),
-        signal: AbortSignal.timeout(30000)
+        signal: AbortSignal.timeout(120000)
     });
 
     if (!response.ok) {
