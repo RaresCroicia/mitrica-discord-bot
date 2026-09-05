@@ -48,6 +48,7 @@ Ceva ce stie el sa faca si noi nu e
 - /plesneala
 - /birthdays
 - /ask <intrebare>
+- /imagine <ce> — Mitrica are o viziune si o deseneaza (Stable Diffusion pe GPU, ~30s)
 
 ## TBA
 - /birthday <cineva>

@@ -20,6 +20,8 @@ spec:
             - { name: TZ, value: Europe/Bucharest }
             - { name: OLLAMA_URL, value: "http://ollama.media.svc.cluster.local:11434" }
             - { name: OLLAMA_MODEL, value: "qwen2.5:7b" }
+            - { name: COMFY_URL, value: "http://comfyui.media.svc.cluster.local:8188" }
+            - { name: COMFY_CHECKPOINT, value: "DreamShaper_8_pruned.safetensors" }
           envFrom:
             - secretRef: { name: mitrica-env }
           resources:

@@ -9,6 +9,7 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 | Host Proxmox | `192.168.1.190` | hypervisor |
 | VM k3s | `192.168.1.108` | k3s single-node + Traefik ingress; aici trăiește botul; are GPU-ul (GTX 1660 Ti) prin PCI passthrough |
 | Ollama | pod în k3s, namespace `media` | API în cluster: `http://ollama.media.svc.cluster.local:11434` |
+| ComfyUI | pod în k3s, namespace `media` | API în cluster: `http://comfyui.media.svc.cluster.local:8188`; UI la `comfy.lab.rcroi.xyz`; checkpoint DreamShaper 8 (SD 1.5) |
 
 - Ollama rulează în același cluster (namespace `media`), pe GPU partajat cu Jellyfin prin time-slicing — în timpul unei rafale de transcodare inferența poate încetini de ~20x, de aici timeout-ul generos (120s) din comenzi.
 - Modelul stă permanent în VRAM (`OLLAMA_KEEP_ALIVE=-1` + postStart warm-up în manifestul lui Ollama).
@@ -25,6 +26,7 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 - `src/events/client/` — `ready`, `interactionCreate`.
 - `frontend/` — React separat, NU face parte din imaginea Docker / deploy.
 - MongoDB e folosit de `quote` și `cuminvat` (`MONGO_URL`). `/ask` și `/proverb` folosesc Ollama.
+- `/imagine`: qwen scrie un prompt absurd în engleză + o frază "viziune" (JSON mode), apoi ComfyUI generează 512×512 (25 pași, dpmpp_2m karras). VRAM-ul de 6 GB nu încape qwen (4.7 GB) + SD 1.5, deci comanda descarcă qwen (`keep_alive: 0`) înainte și dă `POST /free` la ComfyUI după; următorul `/ask` reîncarcă qwen singur (~5s). O singură generare simultan (flag `ocupat`), cooldown 60s/user. Workflow-ul e hardcodat în API-format în `imagine.js`.
 - `/proverb`: lista de ~170 proverbe e în `src/data/proverbe.js`; comanda alege 5-6 și cere LLM-ului un proverb nou absurd, cu fallback pe tăietură mecanică (frankenstein) dacă Ollama nu răspunde.
 
 ## Env vars (toate injectate din Secretul `mitrica-env`, mai puțin Ollama)
@@ -33,6 +35,7 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 - `CLIENT_ID`, `GUILD_ID` — pentru înregistrarea slash commands (secret)
 - `MONGO_URL` — conexiunea Mongo (secret, OPȚIONAL: fără el botul pornește normal, doar `/quote` și `/cuminvat` răspund că n-au bază de date; momentan nu există Mongo deployat nicăieri)
 - `OLLAMA_URL` (default `http://ollama.media.svc.cluster.local:11434`), `OLLAMA_MODEL` (default `qwen2.5:7b`) — setate simplu în manifest
+- `COMFY_URL` (default `http://comfyui.media.svc.cluster.local:8188`), `COMFY_CHECKPOINT` (default `DreamShaper_8_pruned.safetensors`) — pentru `/imagine`
 
 ## Deploy
 
