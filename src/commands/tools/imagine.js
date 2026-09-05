@@ -67,6 +67,16 @@ async function descarcaOllama() {
     }
 }
 
+// Reincarca qwen in fundal (fire-and-forget), altfel primul /ask dupa o imagine dureaza ~30s.
+function preincalzesteOllama() {
+    fetch(`${OLLAMA_URL}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: OLLAMA_MODEL, prompt: 'Salut.', stream: false, options: { num_predict: 1 } }),
+        signal: AbortSignal.timeout(120000)
+    }).catch((err) => console.warn('Preincalzirea Ollama a esuat:', err.message));
+}
+
 // Elibereaza VRAM-ul ComfyUI ca sa aiba loc qwen la urmatorul /ask.
 async function elibereazaComfy() {
     try {
@@ -181,6 +191,7 @@ module.exports = {
                 imagine = await genereazaImagine(viziune.prompt);
             } finally {
                 await elibereazaComfy();
+                preincalzesteOllama();
             }
 
             const attachment = new AttachmentBuilder(imagine, { name: 'viziune.png' });
