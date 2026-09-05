@@ -26,7 +26,7 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 - `src/events/client/` — `ready`, `interactionCreate`.
 - `frontend/` — React separat, NU face parte din imaginea Docker / deploy.
 - MongoDB e folosit de `quote` și `cuminvat` (`MONGO_URL`). `/ask` și `/proverb` folosesc Ollama.
-- `/imagine`: qwen scrie un prompt absurd în engleză + o frază "viziune" (JSON mode), apoi ComfyUI generează 512×512 (25 pași, dpmpp_2m karras). VRAM-ul de 6 GB nu încape qwen (4.7 GB) + SD 1.5, deci comanda descarcă qwen (`keep_alive: 0`) înainte și dă `POST /free` la ComfyUI după; următorul `/ask` reîncarcă qwen singur (~5s). O singură generare simultan (flag `ocupat`), cooldown 60s/user. Workflow-ul e hardcodat în API-format în `imagine.js`.
+- `/imagine`: qwen scrie un prompt absurd în engleză + o frază "viziune" (JSON mode), apoi ComfyUI generează 512×512 (25 pași, dpmpp_2m karras). VRAM-ul de 6 GB nu încape qwen (4.7 GB) + SD 1.5, deci comanda descarcă qwen (`keep_alive: 0`) înainte și dă `POST /free` la ComfyUI după; apoi reîncarcă qwen în fundal (fire-and-forget), altfel primul `/ask` după o imagine ar dura ~30s. O singură generare simultan (flag `ocupat`), cooldown 60s/user. Workflow-ul e hardcodat în API-format în `imagine.js`.
 - `/proverb`: lista de ~170 proverbe e în `src/data/proverbe.js`; comanda alege 5-6 și cere LLM-ului un proverb nou absurd, cu fallback pe tăietură mecanică (frankenstein) dacă Ollama nu răspunde.
 
 ## Env vars (toate injectate din Secretul `mitrica-env`, mai puțin Ollama)
