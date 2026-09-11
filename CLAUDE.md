@@ -9,10 +9,10 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 | Host Proxmox | `192.168.1.190` | hypervisor |
 | VM k3s | `192.168.1.108` | k3s single-node + Traefik ingress; aici trăiește botul; are GPU-ul (GTX 1660 Ti) prin PCI passthrough |
 | Ollama | pod în k3s, namespace `media` | API în cluster: `http://ollama.media.svc.cluster.local:11434` |
-| ComfyUI | pod în k3s, namespace `media` | API în cluster: `http://comfyui.media.svc.cluster.local:8188`; UI la `comfy.lab.rcroi.xyz`; checkpoint DreamShaper 8 (SD 1.5) |
+| ComfyUI | pod în k3s, namespace `media` | API în cluster: `http://comfyui.media.svc.cluster.local:8188`; UI la `comfy.lab.rcroi.xyz`; checkpoint DreamShaper 8 (SD 1.5). Stă la 0 replici; botul îl pornește la cerere (`src/lib/comfy.js`) și îl oprește după 10 min fără cereri |
 
 - Ollama rulează în același cluster (namespace `media`), pe GPU partajat cu Jellyfin prin time-slicing — în timpul unei rafale de transcodare inferența poate încetini de ~20x, de aici timeout-ul generos (120s) din comenzi.
-- Modelul stă permanent în VRAM (`OLLAMA_KEEP_ALIVE=-1` + postStart warm-up în manifestul lui Ollama).
+- Modelul stă în VRAM cât e folosit și se descarcă după 30 min fără cereri (`OLLAMA_KEEP_ALIVE=30m` în manifestul lui Ollama); primul `/ask` după pauză durează ~10 s în plus.
 - Modele Ollama disponibile: `qwen2.5:7b` (folosit acum, ~1-5s/răspuns cald), `llama3.2:3b` (mai rapid, dacă 7B devine lent), `phi3.5`.
 - GPU-ul e unul singur — cererile `/ask` concurente se procesează secvențial în Ollama; ok pentru un server mic.
 - `kubectl` merge din WSL de pe PC (kubeconfig arată spre VM).
@@ -26,7 +26,7 @@ Bot de Discord în română (discord.js v14, Node 18+), ton sarcastic/absurd. Ru
 - `src/events/client/` — `ready`, `interactionCreate`.
 - `frontend/` — React separat, NU face parte din imaginea Docker / deploy.
 - MongoDB e folosit de `quote` și `cuminvat` (`MONGO_URL`). `/ask` și `/proverb` folosesc Ollama.
-- `/imagine`: qwen scrie un prompt absurd în engleză + o frază "viziune" (JSON mode), apoi ComfyUI generează 512×512 (25 pași, dpmpp_2m karras). VRAM-ul de 6 GB nu încape qwen (4.7 GB) + SD 1.5, deci comanda descarcă qwen (`keep_alive: 0`) înainte și dă `POST /free` la ComfyUI după; apoi reîncarcă qwen în fundal (fire-and-forget), altfel primul `/ask` după o imagine ar dura ~30s. O singură generare simultan (flag `ocupat`), cooldown 60s/user. Workflow-ul e hardcodat în API-format în `imagine.js`.
+- `/imagine`: qwen scrie un prompt absurd în engleză + o frază "viziune" (JSON mode), apoi ComfyUI generează 512×512 (25 pași, dpmpp_2m karras). VRAM-ul de 6 GB nu încape qwen (4.7 GB) + SD 1.5, deci comanda descarcă qwen (`keep_alive: 0`) înainte și dă `POST /free` la ComfyUI după; apoi reîncarcă qwen în fundal (fire-and-forget), altfel primul `/ask` după o imagine ar dura ~30s. O singură generare simultan (flag `ocupat`), cooldown 60s/user. ComfyUI e pornit la cerere: `comfy.porneste()` scalează deployment-ul `media/comfyui` la 1 prin API-ul Kubernetes (ServiceAccount `mitrica`, Role `comfyui-scaler`, env `NODE_EXTRA_CA_CERTS` pentru CA-ul API-ului) și așteaptă `/system_stats`; `comfy.programeazaOprire()` îl scalează la 0 după `COMFY_IDLE_MINUTES` (10). Pornirea la rece durează ~1 min, botul anunță în reply. Workflow-ul e hardcodat în API-format în `imagine.js`.
 - `/proverb`: lista de ~170 proverbe e în `src/data/proverbe.js`; comanda alege 5-6 și cere LLM-ului un proverb nou absurd, cu fallback pe tăietură mecanică (frankenstein) dacă Ollama nu răspunde.
 
 ## Env vars (toate injectate din Secretul `mitrica-env`, mai puțin Ollama)

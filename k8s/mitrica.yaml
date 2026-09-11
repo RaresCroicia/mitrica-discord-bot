@@ -2,6 +2,28 @@ apiVersion: v1
 kind: Namespace
 metadata: { name: bots }
 ---
+# /imagine porneste ComfyUI la cerere: botul scaleaza deployment-ul media/comfyui la 1 inainte de generare
+# si la 0 dupa ~10 min fara cereri (src/lib/comfy.js). Are voie DOAR la scale pe acel deployment.
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: mitrica, namespace: bots }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: { name: comfyui-scaler, namespace: media }
+rules:
+  - apiGroups: [apps]
+    resources: [deployments/scale]
+    resourceNames: [comfyui]
+    verbs: [get, patch, update]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: { name: mitrica-comfyui-scaler, namespace: media }
+roleRef: { apiGroup: rbac.authorization.k8s.io, kind: Role, name: comfyui-scaler }
+subjects:
+  - { kind: ServiceAccount, name: mitrica, namespace: bots }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata: { name: mitrica, namespace: bots }
@@ -12,6 +34,7 @@ spec:
   template:
     metadata: { labels: { app: mitrica } }
     spec:
+      serviceAccountName: mitrica
       containers:
         - name: mitrica
           image: ghcr.io/rarescroicia/mitrica:latest
@@ -22,6 +45,10 @@ spec:
             - { name: OLLAMA_MODEL, value: "qwen2.5:7b" }
             - { name: COMFY_URL, value: "http://comfyui.media.svc.cluster.local:8188" }
             - { name: COMFY_CHECKPOINT, value: "DreamShaper_8_pruned.safetensors" }
+            - { name: COMFY_DEPLOYMENT, value: "media/comfyui" }
+            - { name: COMFY_IDLE_MINUTES, value: "10" }
+            # CA-ul API-ului Kubernetes, ca fetch-ul nativ sa accepte https://kubernetes.default.svc
+            - { name: NODE_EXTRA_CA_CERTS, value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt }
           envFrom:
             - secretRef: { name: mitrica-env }
           resources:

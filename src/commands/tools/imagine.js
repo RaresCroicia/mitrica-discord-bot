@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
+const comfy = require('../../lib/comfy');
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama.media.svc.cluster.local:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
@@ -10,6 +11,7 @@ const COMFY_TIMEOUT_MS = 180 * 1000;
 
 // GPU-ul e unul singur si VRAM-ul (6 GB) nu incape si qwen (4.7 GB) si SD 1.5 in acelasi timp.
 // O singura generare o data; qwen se descarca inainte, ComfyUI se elibereaza dupa.
+// ComfyUI sta oprit (0 replici) cand nu e folosit; il pornim la cerere (src/lib/comfy.js), pornirea la rece dureaza ~1 min.
 let ocupat = false;
 const ultimaFolosire = new Map();
 
@@ -189,9 +191,11 @@ module.exports = {
             await descarcaOllama();
             let imagine;
             try {
+                await comfy.porneste(() => interaction.editReply({ content: 'Imi scot creioanele din sertar, dureaza vreun minut...' }));
                 imagine = await genereazaImagine(viziune.prompt);
             } finally {
                 await elibereazaComfy();
+                comfy.programeazaOprire();
                 preincalzesteOllama();
             }
 
