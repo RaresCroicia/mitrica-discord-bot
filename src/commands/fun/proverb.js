@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const PROVERBE = require('../../data/proverbe.js');
-
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama.media.svc.cluster.local:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
+const ollama = require('../../lib/ollama');
 
 function alegeProverbe(cate) {
     const alese = [];
@@ -23,25 +21,12 @@ function frankenstein(alese) {
     }).join(' ');
 }
 
-async function proverbCuLLM(alese) {
-    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            model: OLLAMA_MODEL,
+async function proverbCuLLM(alese, onBusy) {
+    const data = await ollama.generate({
             prompt: 'Uite proverbele:\n' + alese.map(p => '- ' + p).join('\n'),
-            stream: false,
             options: { temperature: 1.1 },
             system: 'Esti Mitrica, un bot de Discord roman dus cu pluta. Primesti o lista de proverbe romanesti si creezi UN SINGUR proverb nou, scurt (maxim 20 de cuvinte), amestecand bucati si idei din ele. Proverbul trebuie sa sune ca o intelepciune populara autentica, spusa cu toata seriozitatea, dar sa fie complet absurd si fara sens - o petarda totala. Nu explica nimic, nu pune ghilimele, raspunde DOAR cu proverbul in romana.'
-        }),
-        signal: AbortSignal.timeout(120000)
-    });
-
-    if (!response.ok) {
-        throw new Error(`Ollama a raspuns cu status ${response.status}`);
-    }
-
-    const data = await response.json();
+        }, onBusy);
     return data.response.trim();
 }
 
@@ -57,7 +42,7 @@ module.exports = {
 
             let proverb;
             try {
-                proverb = await proverbCuLLM(alese);
+                proverb = await proverbCuLLM(alese, ollama.mesajOcupat(interaction));
             } catch (err) {
                 console.error('Eroare la /proverb (Ollama), folosesc fallback:', err.message);
                 proverb = frankenstein(alese);

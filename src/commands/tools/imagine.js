@@ -1,8 +1,7 @@
 const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
 const comfy = require('../../lib/comfy');
-
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://ollama.media.svc.cluster.local:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
+const ollama = require('../../lib/ollama');
+const { OLLAMA_URL, OLLAMA_MODEL } = ollama;
 const COMFY_URL = process.env.COMFY_URL || 'http://comfyui.media.svc.cluster.local:8188';
 const COMFY_CHECKPOINT = process.env.COMFY_CHECKPOINT || 'DreamShaper_8_pruned.safetensors';
 
@@ -22,22 +21,13 @@ const SYSTEM_VIZIUNE = 'Esti Mitrica, un bot de Discord roman complet dus cu plu
     + 'Regula pentru "viziune": o singura fraza in ROMANA corecta gramatical, maxim 25 de cuvinte, in care Mitrica anunta cu incredere maxima ce a vazut. Foloseste CEL MULT o exclamatie taraneasca (bre, mai omule, doamne fereste, na belea, auzi la el, ptiu drace - una singura, sau niciuna). Fara injuraturi grele si fara rautati la adresa oamenilor reali.\n'
     + 'Exemplu pentru cererea "un pisoi care conduce un tractor": {"prompt": "a small kitten driving a rusty red tractor through a romanian village, chickens flying in panic, an old woman with a headscarf shaking her fist, soviet propaganda poster style, bold colors, highly detailed, dramatic lighting", "viziune": "Na belea, l-am vazut pe pisoi la volanul tractorului, iar gainile din Bacau n-o sa mai doarma vreodata."}';
 
-async function viziuneCuLLM(cerere) {
-    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            model: OLLAMA_MODEL,
-            prompt: 'Cererea omului: ' + cerere,
-            system: SYSTEM_VIZIUNE,
-            format: 'json',
-            stream: false,
-            options: { temperature: 1.1 }
-        }),
-        signal: AbortSignal.timeout(120000)
-    });
-    if (!response.ok) throw new Error(`Ollama a raspuns cu status ${response.status}`);
-    const data = await response.json();
+async function viziuneCuLLM(cerere, onBusy) {
+    const data = await ollama.generate({
+        prompt: 'Cererea omului: ' + cerere,
+        system: SYSTEM_VIZIUNE,
+        format: 'json',
+        options: { temperature: 1.1 }
+    }, onBusy);
     const parsed = JSON.parse(data.response);
     if (!parsed.prompt || typeof parsed.prompt !== 'string') throw new Error('LLM fara prompt');
     return {
@@ -76,7 +66,7 @@ function preincalzesteOllama() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: OLLAMA_MODEL, prompt: 'Salut.', stream: false, options: { num_predict: 1 } }),
-        signal: AbortSignal.timeout(120000)
+        signal: AbortSignal.timeout(ollama.TIMEOUT_MS)
     }).catch((err) => console.warn('Preincalzirea Ollama a esuat:', err.message));
 }
 
@@ -182,7 +172,7 @@ module.exports = {
         try {
             let viziune;
             try {
-                viziune = await viziuneCuLLM(cerere);
+                viziune = await viziuneCuLLM(cerere, ollama.mesajOcupat(interaction));
             } catch (err) {
                 console.warn('LLM-ul n-a dat viziune, fallback:', err.message);
                 viziune = viziuneFallback(cerere);
